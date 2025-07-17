@@ -27,7 +27,7 @@ func NewMiddleware(introspectionUrl string, jwt []byte) *Middleware {
 
 func (m *Middleware) Authenticate(handler func(res http.ResponseWriter, req *http.Request) error) func(res http.ResponseWriter, req *http.Request) error {
 	return func(res http.ResponseWriter, req *http.Request) error {
-		header := req.Header.Get("authorization")
+		header := req.Header.Get("Authorization")
 		if header == "" {
 			http.Error(res, "no authorization header", http.StatusUnauthorized)
 			return nil

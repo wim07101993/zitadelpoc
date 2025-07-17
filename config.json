@@ -1,4 +1,4 @@
 {
-  "tokenIntrospectionUrl": "http://localhost:8080/oauth/v2/introspect",
+  "tokenIntrospectionUrl": "http://localhost:7003/oauth/v2/introspect",
   "tokenIntrospectionJwtFile": "key.base64"
 }
