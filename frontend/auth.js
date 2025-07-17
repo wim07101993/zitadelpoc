@@ -248,7 +248,6 @@ class TokenRequestParams {
       client_id: this.clientId,
       grant_type: this.grantType,
       redirect_uri: this.redirectUri.toString(),
-      scope: this.scope?.join(' '),
       refresh_token: this.refreshToken,
       code: this.code,
       code_verifier: this.codeVerifier,

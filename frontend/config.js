@@ -10,6 +10,7 @@ export const defaultScopes = [
   'email',
   'profile',
   'offline_access',
+  'urn:zitadel:iam:org:project:id:309755292957016067:aud'
 ];
 
 export const apiConfig = {
