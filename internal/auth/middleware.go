@@ -3,7 +3,6 @@ package auth
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
-	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -77,13 +76,8 @@ func introspectToken(endpoint string, authToken []byte, token string) (bool, err
 		return false, errors.Wrap(err, "failed to do token introspection because of authentication reasons")
 	}
 
-	body, _ := io.ReadAll(resp.Body)
-	str := string(body)
-	print(str)
-
 	var result IntrospectionResponse
-	if err = json.Unmarshal(body, &result); err != nil {
-		//if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return false, errors.Wrap(err, "could not read response from introspection request")
 	}
 	return result.IsActive, nil
