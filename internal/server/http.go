@@ -24,13 +24,17 @@ func (serv *HttpServer) RegisterRoutes() {
 }
 
 func healthz(res http.ResponseWriter, _ *http.Request) error {
-	res.WriteHeader(200)
+	res.WriteHeader(http.StatusOK)
 	_, err := res.Write([]byte("OK"))
 	return err
 }
 
-func secret(res http.ResponseWriter, _ *http.Request) error {
-	res.WriteHeader(200)
+func secret(res http.ResponseWriter, req *http.Request) error {
+	if req.Method != "GET" {
+		res.WriteHeader(http.StatusMethodNotAllowed)
+		return nil
+	}
+	res.WriteHeader(http.StatusOK)
 	_, err := res.Write([]byte("THIS IS SECRET"))
 	return err
 }

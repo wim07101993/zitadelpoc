@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+// ResponseWriter logs responses of the api. No body is logged only and
+// correlation-ids, errors.
 type ResponseWriter struct {
 	logger        *slog.Logger
 	response      http.ResponseWriter
