@@ -10,7 +10,6 @@ import (
 )
 
 type Config struct {
-	HttpServerPort            int    `envconfig:"HTTP_SERVER_PORT" json:"httpServerPort" default:"7001"`
 	TokenIntrospectionUrl     string `envconfig:"TOKEN_INTROSPECTION_URL" json:"tokenIntrospectionUrl"`
 	TokenIntrospectionJwtFile string `envconfig:"TOKEN_INTROSPECTION_JWT_FILE" json:"tokenIntrospectionJwtFile"`
 }
@@ -47,9 +46,6 @@ func (cfg *Config) Validate() error {
 
 	var errs []error
 
-	if cfg.HttpServerPort < 80 {
-		errs = append(errs, errors.New("cannot listen on a port lower than 80 for listening for http requests"))
-	}
 	if cfg.TokenIntrospectionUrl == "" {
 		errs = append(errs, errors.New("no token introspection endpoint specified in configuration"))
 	} else if _, err := url.ParseRequestURI(cfg.TokenIntrospectionUrl); err != nil {

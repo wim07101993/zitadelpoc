@@ -24,7 +24,6 @@ func (m *Middleware) Log(handler func(res http.ResponseWriter, req *http.Request
 		correlation := uuid.New().String()
 		m.Logger.Info("handle http request",
 			slog.String("method", req.Method),
-			slog.String("pattern", req.Pattern),
 			slog.String("uri", req.RequestURI),
 			slog.String("correlationId", correlation))
 

@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run server" type="GoApplicationRunConfiguration" factoryName="Go Application">
     <module name="zitadelpoc" />
-    <working_directory value="$PROJECT_DIR$/cmd" />
+    <working_directory value="$PROJECT_DIR$" />
     <kind value="PACKAGE" />
-    <package value="github.com/wim07101993/zitadelpoc/cmd" />
+    <package value="github.com/wim07101993/zitadelpoc" />
     <directory value="$PROJECT_DIR$" />
     <filePath value="$PROJECT_DIR$/cmd/main.go" />
     <method v="2" />

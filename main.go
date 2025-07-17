@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/wim07101993/zitadelpoc/internal/auth"
 	"github.com/wim07101993/zitadelpoc/internal/logging"
 	"github.com/wim07101993/zitadelpoc/internal/server"
@@ -38,9 +37,11 @@ func main() {
 		auth.NewMiddleware(cfg.TokenIntrospectionUrl, tokenIntrospectionJwt))
 	srv.RegisterRoutes()
 
-	addr := fmt.Sprintf(":%d", cfg.HttpServerPort)
-	logger.Info("start listening for http requests", slog.String("addr", addr))
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	fs := http.FileServer(http.Dir("./frontend"))
+	http.Handle("/", fs)
+
+	logger.Info("start listening for http requests")
+	if err := http.ListenAndServe(":8765", nil); err != nil {
 		logger.Error("failed to serve score scoresIndex",
 			slog.Any("error", err))
 	}

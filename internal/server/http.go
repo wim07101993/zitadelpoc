@@ -19,8 +19,8 @@ func NewHttpServer(log *logging.Middleware, auth *auth.Middleware) *HttpServer {
 }
 
 func (serv *HttpServer) RegisterRoutes() {
-	http.HandleFunc("/healthz", cors(serv.Logger.Log(healthz)))
-	http.HandleFunc("/secret", cors(serv.Logger.Log(serv.Auth.Authenticate(secret))))
+	http.HandleFunc("/api/healthz", cors(serv.Logger.Log(healthz)))
+	http.HandleFunc("/api/secret", cors(serv.Logger.Log(serv.Auth.Authenticate(secret))))
 }
 
 func healthz(res http.ResponseWriter, _ *http.Request) error {
