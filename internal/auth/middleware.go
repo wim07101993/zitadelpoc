@@ -14,13 +14,15 @@ type IntrospectionResponse struct {
 
 type Middleware struct {
 	IntrospectionUrl string
-	Jwt              []byte
+	ClientId         string
+	ClientSecret     string
 }
 
-func NewMiddleware(introspectionUrl string, jwt []byte) *Middleware {
+func NewMiddleware(introspectionUrl string, clientId string, clientSecret string) *Middleware {
 	return &Middleware{
 		IntrospectionUrl: introspectionUrl,
-		Jwt:              jwt,
+		ClientId:         clientId,
+		ClientSecret:     clientSecret,
 	}
 }
 
@@ -29,40 +31,40 @@ func (m *Middleware) Authenticate(handler func(res http.ResponseWriter, req *htt
 		header := req.Header.Get("Authorization")
 		if header == "" {
 			http.Error(res, "no authorization header", http.StatusUnauthorized)
-			return nil
+			return errors.New("no authorization header")
 		}
 
 		split := strings.Split(header, " ")
 		scheme := split[0]
 		if len(split) != 2 || scheme != "Bearer" {
 			http.Error(res, "authorization header is malformed. Expected 'Bearer {token}'", http.StatusUnauthorized)
-			return nil
+			return errors.New("authorization header is malformed. Expected 'Bearer {token}'")
 		}
 		token := split[1]
 
-		isValid, err := introspectToken(m.IntrospectionUrl, m.Jwt, token)
+		isValid, err := introspectToken(m.IntrospectionUrl, m.ClientId, m.ClientSecret, token)
 		if err != nil {
 			http.Error(res, "failed to introspect token", http.StatusInternalServerError)
 			return err
 		}
 		if !isValid {
 			http.Error(res, "token not valid", http.StatusUnauthorized)
-			return nil
+			return errors.New("token not valid")
 		}
 
 		return handler(res, req)
 	}
 }
 
-func introspectToken(endpoint string, authToken []byte, token string) (bool, error) {
+func introspectToken(endpoint string, clientId string, clientSecret string, token string) (bool, error) {
 	data := url.Values{}
-	data.Set("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
-	data.Set("client_assertion", string(authToken))
+
 	data.Set("token", token)
 	req, err := http.NewRequest("POST", endpoint, strings.NewReader(data.Encode()))
 	if err != nil {
 		return false, errors.Wrap(err, "failed to create token introspection request")
 	}
+	req.SetBasicAuth(clientId, clientSecret)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}

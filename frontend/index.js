@@ -10,6 +10,7 @@ const api = new Api(apiConfig.baseUrl);
 let accessToken = null
 
 async function updateContent() {
+  console.log(accessToken);
   console.log(await getUserInfo(authConfig.userInfoEndpoint));
   const contentElement = document.getElementById('content');
   if (contentElement == null) {

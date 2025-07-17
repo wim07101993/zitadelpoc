@@ -10,8 +10,9 @@ import (
 )
 
 type Config struct {
-	TokenIntrospectionUrl     string `envconfig:"TOKEN_INTROSPECTION_URL" json:"tokenIntrospectionUrl"`
-	TokenIntrospectionJwtFile string `envconfig:"TOKEN_INTROSPECTION_JWT_FILE" json:"tokenIntrospectionJwtFile"`
+	TokenIntrospectionUrl          string `envconfig:"TOKEN_INTROSPECTION_URL" json:"tokenIntrospectionUrl"`
+	TokenIntrospectionClientId     string `envconfig:"TOKEN_INTROSPECTION_CLIENT_ID" json:"tokenIntrospectionClientId"`
+	TokenIntrospectionClientSecret string `envconfig:"TOKEN_INTROSPECTION_CLIENT_SECRET" json:"tokenIntrospectionClientSecret"`
 }
 
 func (cfg *Config) FromFile() error {
@@ -52,10 +53,11 @@ func (cfg *Config) Validate() error {
 		errs = append(errs, errorspkg.Wrap(err, "the given token introspection url is not a valid url"))
 	}
 
-	if cfg.TokenIntrospectionJwtFile == "" {
-		errs = append(errs, errors.New("no jwt file to use as auth for token introspection"))
-	} else if _, err := os.Stat(cfg.TokenIntrospectionJwtFile); errors.Is(err, os.ErrNotExist) {
-		errs = append(errs, errorspkg.Wrap(err, "the given jwt file could not be found"))
+	if cfg.TokenIntrospectionClientId == "" {
+		errs = append(errs, errors.New("no client id to use as auth for token introspection"))
+	}
+	if cfg.TokenIntrospectionClientSecret == "" {
+		errs = append(errs, errors.New("no client secret to use as auth for token introspection"))
 	}
 
 	if len(errs) > 0 {

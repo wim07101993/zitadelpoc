@@ -12,7 +12,6 @@ import (
 
 var logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 var cfg Config
-var tokenIntrospectionJwt []byte
 
 func main() {
 	if err := cfg.FromFile(); err != nil {
@@ -26,15 +25,9 @@ func main() {
 	}
 	logger.Debug("starting application with config", slog.Any("config", cfg))
 
-	jwt, err := os.ReadFile(cfg.TokenIntrospectionJwtFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	tokenIntrospectionJwt = jwt
-
 	srv := server.NewHttpServer(
 		logging.NewMiddleware(logger),
-		auth.NewMiddleware(cfg.TokenIntrospectionUrl, tokenIntrospectionJwt))
+		auth.NewMiddleware(cfg.TokenIntrospectionUrl, cfg.TokenIntrospectionClientId, cfg.TokenIntrospectionClientSecret))
 	srv.RegisterRoutes()
 
 	fs := http.FileServer(http.Dir("./frontend"))

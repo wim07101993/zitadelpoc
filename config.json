@@ -1,4 +1,5 @@
 {
   "tokenIntrospectionUrl": "http://localhost:7003/oauth/v2/introspect",
-  "tokenIntrospectionJwtFile": "key.base64"
+  "tokenIntrospectionClientId": "329308527665414147",
+  "tokenIntrospectionClientSecret": "Km5RpycknrFNFmNdCVZlBOycVnRUxiFVnFcfE5bqshivjpczsaQ8k8Ihx2c5TylS"
 }
