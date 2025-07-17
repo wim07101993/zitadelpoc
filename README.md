@@ -29,11 +29,7 @@ At least version 1.21.3 as specified in the [go.mod](go.mod) file.
 Ensure the location from which you run contains a `config.json` file or the 
 required environment variables. An example of the `config.json` file can be 
 found at [config.json](config.json). The names of the environment can
-be found in [config.go](config.go).
+be found in [config.go](config.go). (client-id and secret in the config files
+are made up)
 
-The config parameter which locates the backend jwt for introspection needs to 
-be a file path which the application can read. The content of the file needs
-to be a base64 encoded version of the jwt, e.g. the key.base64 file. (Don't
-worry that key does not work anywhere)
-
-Once everything is set-up run `go run .` in the root of the repository.
+Once everything is set up run `go run .` in the root of the repository.
