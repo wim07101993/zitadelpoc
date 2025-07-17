@@ -1,9 +1,12 @@
 export const authConfig = {
   clientId: '329309089064615939',
   redirectUri: new URL('http://localhost:8765/'),
-  authorizationEndpoint: new URL('http://localhost:7003/oauth/v2/authorize'),
-  tokenEndpoint: new URL('http://localhost:7003/oauth/v2/token'),
-  userInfoEndpoint: new URL('http://localhost:7003/oidc/v1/userinfo')
+  postLogoutRedirectUri: new URL('http://localhost:8765/'),
+  authBaseUrl: new URL('http://localhost:7003'),
+  getAuthorizationEndpoint: () => new URL(`${authConfig.authBaseUrl}oauth/v2/authorize`),
+  getEndSessionEndpoint: () => new URL(`${authConfig.authBaseUrl}oidc/v1/end_session`),
+  getTokenEndpoint: () => new URL(`${authConfig.authBaseUrl}oauth/v2/token`),
+  getUserInfoEndpoint: () => new URL(`${authConfig.authBaseUrl}oidc/v1/userinfo`),
 };
 export const defaultScopes = [
   'openid',

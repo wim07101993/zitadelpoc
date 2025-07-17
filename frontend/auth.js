@@ -29,7 +29,7 @@ export async function authorize(loginIfNotAuthenticated) {
   const codeVerifier = sessionStorage.getItem(pkceCodeVerifierSessionStorageKey);
   if (codeVerifier !== null && authorizationCode !== null && authorizationCode.length !== 0) {
     tokenResponse = await callTokenEndpoint(
-      authConfig.tokenEndpoint,
+      authConfig.getTokenEndpoint(),
       TokenRequestParams.authorizationCode(
         authConfig.clientId,
         'authorization_code',
@@ -45,7 +45,7 @@ export async function authorize(loginIfNotAuthenticated) {
   const refreshToken = localStorage.getItem(refreshTokenLocalStorageKey);
   if (refreshToken !== null) {
     tokenResponse = await callTokenEndpoint(
-      authConfig.tokenEndpoint,
+      authConfig.getTokenEndpoint(),
       TokenRequestParams.refreshToken(
         authConfig.clientId,
         'refresh_token',
@@ -63,7 +63,7 @@ export async function authorize(loginIfNotAuthenticated) {
     await startAuthorizationCodeFlow(
       authConfig.clientId,
       authConfig.redirectUri,
-      authConfig.authorizationEndpoint,
+      authConfig.getAuthorizationEndpoint(),
       defaultScopes
     );
   }
@@ -168,15 +168,14 @@ async function createCodeChallenge(verifier) {
 }
 
 /**
- * @param userInfoEndpoint {URL}
  * @return {Promise<Object|null>}
  */
-export async function getUserInfo(userInfoEndpoint) {
+export async function getUserInfo() {
   if (tokenResponse?.access_token == null) {
     return null;
   }
 
-  const response = await fetch(userInfoEndpoint, {
+  const response = await fetch(authConfig.getUserInfoEndpoint(), {
     headers: {
       "Authorization": `Bearer ${tokenResponse.access_token}`
     }
@@ -189,6 +188,27 @@ export async function getUserInfo(userInfoEndpoint) {
   }
 
   return await response.json();
+}
+
+/**
+ * Signs the user out. This will redirect to another page.
+ *
+ * @return {Promise<null>}
+ */
+export async function endSession() {
+  sessionStorage.removeItem(pkceCodeVerifierSessionStorageKey);
+  localStorage.removeItem(refreshTokenLocalStorageKey);
+
+  const authParams = new URLSearchParams({
+    client_id: authConfig.clientId,
+    post_logout_redirect_uri: authConfig.postLogoutRedirectUri.toString(),
+    id_token_hint: tokenResponse?.id_token
+  });
+
+  const endSessionEndpoint = authConfig.getEndSessionEndpoint();
+  window.location.href = `${endSessionEndpoint.protocol}//${endSessionEndpoint.host}${endSessionEndpoint.pathname}?${authParams.toString()}`;
+
+  return null;
 }
 
 /**
